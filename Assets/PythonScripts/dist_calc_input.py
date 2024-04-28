@@ -54,19 +54,6 @@ print(distances)
 values = list(distances.values())
 print(values)
 
-# Calculate Euclidean distances from point 1 to all other points
-# distances = {}
-# for i in range(2, 19):
-#     distances[1, i] = euclidean(point1, manipulated_data[i])
-
-# # Print distances
-# for key, value in distances.items():
-#     print(f"Distance between 1 and {key[1]}: {value}")
-
-
-
-	
-
 
 
 
