@@ -27,57 +27,63 @@ public class ModelInput : MonoBehaviour
         UnityEngine.Debug.Log(json);
 
         // StartCoroutine(RunPythonScript("\""+json+"\""));
+        StartCoroutine(RunPythonScript());
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        csvContent = new StringBuilder();
-        for (int i = 0; i < LHandJoints.Joints.Count; i++)
+        
+    }
+
+    System.Collections.IEnumerator RunPythonScript()
+    {
+        while (true)
         {
-            Transform obj = (Transform)LHandJoints.Joints[i]; // Casting to GameObject
-            if (i != 0)
+            csvContent = new StringBuilder();
+            for (int i = 0; i < LHandJoints.Joints.Count; i++)
             {
-                csvContent.Append(" " + obj.position.x.ToString() + " " + obj.position.y.ToString() + " " + obj.position.z.ToString());
+                Transform obj = (Transform)LHandJoints.Joints[i]; // Casting to GameObject
+                if (i != 0)
+                {
+                    csvContent.Append(" " + obj.position.x.ToString() + " " + obj.position.y.ToString() + " " + obj.position.z.ToString());
+                }
+                else
+                {
+                    csvContent.Append(obj.position.x.ToString() + " " + obj.position.y.ToString() + " " + obj.position.z.ToString() + " ");
+                }
             }
-            else
-            {
-                csvContent.Append(obj.position.x.ToString() + " " + obj.position.y.ToString() + " " + obj.position.z.ToString() + " ");
-            }
+            // Run Python script
+            string activateCommand = $"conda activate cpe & python Assets/PythonScripts/dist_calc_input.py " + csvContent.ToString();
+            ProcessStartInfo pythonStartInfo = new ProcessStartInfo();
+            pythonStartInfo.FileName = "cmd.exe";
+            pythonStartInfo.Arguments = $"/C \"{activateCommand}\"";
+            pythonStartInfo.UseShellExecute = false;
+            pythonStartInfo.RedirectStandardOutput = true;
+            pythonStartInfo.RedirectStandardError = true;
+            pythonStartInfo.CreateNoWindow = true;
+
+            Process pythonProcess = Process.Start(pythonStartInfo);
+
+            // Read output/error asynchronously
+            StreamReader outputReader = pythonProcess.StandardOutput;
+            StreamReader errorReader = pythonProcess.StandardError;
+
+            // Wait until process exits
+            yield return new WaitUntil(() => pythonProcess.HasExited);
+
+            // Capture output/error
+            string output = outputReader.ReadToEnd();
+            string error = errorReader.ReadToEnd();
+
+            // Close streams
+            outputReader.Close();
+            errorReader.Close();
+
+            // Log output/error
+            UnityEngine.Debug.Log("Output: " + output);
+            UnityEngine.Debug.Log("Error: " + error);
+
+            yield return new WaitForSeconds(2f);
         }
-        StartCoroutine(RunPythonScript(csvContent.ToString()));
-    }
-
-    System.Collections.IEnumerator RunPythonScript(string scriptPath)
-    {
-        // Run Python script
-        string activateCommand = $"conda activate cpe & python Assets/PythonScripts/loader_two.py "+scriptPath;
-        ProcessStartInfo pythonStartInfo = new ProcessStartInfo();
-        pythonStartInfo.FileName = "cmd.exe";
-        pythonStartInfo.Arguments = $"/C \"{activateCommand}\"";
-        pythonStartInfo.UseShellExecute = false;
-        pythonStartInfo.RedirectStandardOutput = true;
-        pythonStartInfo.RedirectStandardError = true;
-        pythonStartInfo.CreateNoWindow = true;
-
-        Process pythonProcess = Process.Start(pythonStartInfo);
-
-        // Read output/error asynchronously
-        StreamReader outputReader = pythonProcess.StandardOutput;
-        StreamReader errorReader = pythonProcess.StandardError;
-
-        // Wait until process exits
-        yield return new WaitUntil(() => pythonProcess.HasExited);
-
-        // Capture output/error
-        string output = outputReader.ReadToEnd();
-        string error = errorReader.ReadToEnd();
-
-        // Close streams
-        outputReader.Close();
-        errorReader.Close();
-
-        // Log output/error
-        UnityEngine.Debug.Log("Output: " + output);
-        UnityEngine.Debug.Log("Error: " + error);
     }
 }
