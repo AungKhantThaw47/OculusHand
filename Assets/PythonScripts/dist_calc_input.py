@@ -57,10 +57,8 @@ for i in range(2, 19):  # Loop from 2 to 18
 #print(distances)
 
 values = list(distances.values())
-print(values)
-print(len(values))
 
 knn_classifier_loaded = load('Assets\PythonScripts\classifier.joblib')
 out = knn_classifier_loaded.predict([values])
 
-print(out)
+print(out[0])

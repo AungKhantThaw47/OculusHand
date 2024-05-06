@@ -3183,7 +3183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1703235020}
   countdownDuration: 5
-  countdownNumber: 100
+  countdownNumber: 500
   LHandJoints: {fileID: 848257391}
 --- !u!1001 &782628375
 PrefabInstance:

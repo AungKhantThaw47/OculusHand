@@ -89,6 +89,7 @@ public class CSVOutput : MonoBehaviour
         {
             // Code to be executed every second
             Debug.Log("Executing every second...");
+            Debug.Log(countdownNumber.ToString());
             Debug.Log("Collect Data");
             //for (int i = 0; i < LHandJoints.Joints.Count; i++)
             //{
@@ -107,13 +108,14 @@ public class CSVOutput : MonoBehaviour
                 {
                     csvContent.Append(obj.position.x.ToString() + ", " + obj.position.y.ToString() + ", " + obj.position.z.ToString() + ", " + obj.rotation.x.ToString() + ", " + obj.rotation.y.ToString() + ", " + obj.rotation.z.ToString());
                 }
-                Debug.Log("Object " + i + ": " + obj.name);
+                // Debug.Log("Object " + i + ": " + obj.name);
             }
             csvContent.AppendLine();
             textMeshPro.text = countdownNumber.ToString();
             countdownNumber = countdownNumber - 1;
+            // countdownNumber = countdownNumber ;
             // Wait for 1 second
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.2f);
         }
         WriteCSV();
     }

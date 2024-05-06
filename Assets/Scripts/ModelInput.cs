@@ -5,9 +5,11 @@ using System.Diagnostics;
 using System.Text;
 using UnityEngine;
 using System.IO;
+using TMPro;
 
 public class ModelInput : MonoBehaviour
 {
+    public TMP_Text textMeshPro;
     public HandVisual LHandJoints;
     private StringBuilder csvContent;
     [System.Serializable]
@@ -19,6 +21,7 @@ public class ModelInput : MonoBehaviour
 
     void Start()
     {
+        textMeshPro.text = "No Sign";
         HandData theData = new HandData();
         theData.data = "[[0.02614065, 0.04852969, 0.08149, 0.1155533, 0.10190149, 0.1160985, 0.0941752, 0.09838805, 0.11096662, 0.08678643, 0.09318216, 0.10614858, 0.08470459, 0.0889438, 0.11663967, 0.13486271]]";
 
@@ -80,10 +83,11 @@ public class ModelInput : MonoBehaviour
             errorReader.Close();
 
             // Log output/error
+            textMeshPro.text = output;
             UnityEngine.Debug.Log("Output: " + output);
             UnityEngine.Debug.Log("Error: " + error);
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
         }
     }
 }
